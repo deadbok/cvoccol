@@ -1,0 +1,64 @@
+Language model created by QuickLM on Sun Aug  9 17:01:01 EDT 2015
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 8 sentences and 10 words
+
+\data\
+ngram 1=10
+ngram 2=16
+ngram 3=15
+
+\1-grams:
+-0.8893 </s> -0.3010
+-0.8893 <s> -0.2410
+-1.4914 HIFI -0.2568
+-1.3153 OFF -0.2410
+-1.3153 ON -0.2410
+-1.4914 SCREEN -0.2568
+-1.7924 STRAYLIGHT -0.2410
+-1.4914 TV -0.2568
+-1.7924 UP -0.2410
+-1.7924 WAKE -0.2940
+
+\2-grams:
+-0.9031 <s> HIFI 0.0000
+-0.9031 <s> SCREEN 0.0000
+-1.2041 <s> STRAYLIGHT 0.0000
+-0.9031 <s> TV 0.0000
+-1.2041 <s> WAKE 0.0000
+-0.6021 HIFI OFF 0.0000
+-0.6021 HIFI ON 0.0000
+-0.3010 OFF </s> -0.3010
+-0.3010 ON </s> -0.3010
+-0.6021 SCREEN OFF 0.0000
+-0.6021 SCREEN ON 0.0000
+-0.3010 STRAYLIGHT </s> -0.3010
+-0.6021 TV OFF 0.0000
+-0.6021 TV ON 0.0000
+-0.3010 UP </s> -0.3010
+-0.3010 WAKE UP 0.0000
+
+\3-grams:
+-0.6021 <s> HIFI OFF
+-0.6021 <s> HIFI ON
+-0.6021 <s> SCREEN OFF
+-0.6021 <s> SCREEN ON
+-0.3010 <s> STRAYLIGHT </s>
+-0.6021 <s> TV OFF
+-0.6021 <s> TV ON
+-0.3010 <s> WAKE UP
+-0.3010 HIFI OFF </s>
+-0.3010 HIFI ON </s>
+-0.3010 SCREEN OFF </s>
+-0.3010 SCREEN ON </s>
+-0.3010 TV OFF </s>
+-0.3010 TV ON </s>
+-0.3010 WAKE UP </s>
+
+\end\
