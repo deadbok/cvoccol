@@ -1,0 +1,3 @@
+xset dpms force on
+pico2wave -l=en-GB -w=/tmp/yesdave.wav "Yes Dave."
+aplay /tmp/yesdave.wav

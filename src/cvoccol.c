@@ -57,13 +57,13 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/stat.h>
-#include <linux/kd.h>
 #include <sys/types.h>
-#include <sys/ioctl.h>
 #include <sys/select.h>
 #include <sphinxbase/err.h>
 #include <sphinxbase/ad.h>
 #include <pocketsphinx/pocketsphinx.h>
+
+static spoken_to = 0;
 
 static const arg_t cont_args_def[] =
 {
@@ -99,33 +99,50 @@ static const arg_t cont_args_def[] =
 static ps_decoder_t *ps;
 static cmd_ln_t *config;
 
-static void led_on(int fd)
-{
-	int status;
-
-	if ((ioctl(fd, KDSETLED, LED_CAP)) == -1)
-	{
-		perror("ioctl");
-	    E_FATAL("Could not open console device.");
-	}
-}
-
-static void led_off(int fd)
-{
-	int status;
-
-	if ((ioctl(fd, KDSETLED, 0x00)) == -1)
-	{
-		perror("ioctl");
-	    E_FATAL("Could not open console device.");
-	}
-}
-
 static void call_cmd(const char *v_cmd)
 {
+	char *cmd;
+	char fp_cmd[255];
+	int i;
+
 	if (*v_cmd != 0)
 	{
+		cmd = malloc(sizeof(char) * strlen(v_cmd));
 		printf("Voice command: %s.\n", v_cmd);
+		for(i = 0; v_cmd[i]; i++)
+		{
+			cmd[i] = tolower(v_cmd[i]);
+			if (cmd[i] == ' ')
+			{
+				cmd[i] = '_';
+			}
+		}
+		cmd[i] = '\0';
+		if (strcmp(cmd, "straylight") == 0)
+		{
+			spoken_to = TRUE;
+		}
+
+		if (spoken_to)
+		{
+			printf("Script: %s.\n", cmd);
+			strcpy(fp_cmd, "./scripts/");
+			strcat(fp_cmd, cmd);
+			i = system(fp_cmd);
+			if (i != 0)
+			{
+				strcpy(fp_cmd, "./scripts/");
+				strcat(fp_cmd, "error");
+				i = system(fp_cmd);
+			}
+			printf("%d\n", i);
+			if (strcmp(cmd, "straylight") != 0)
+			{
+				spoken_to = FALSE;
+			}
+
+		}
+		free(cmd);
 	}
 }
 
@@ -156,14 +173,6 @@ static void recognize_from_microphone()
 	int32 k;
 	int32 score;
 	char const *hyp;
-	int fd;
-
-    /* Keyboard LED ioctl(). */
-	if ((fd = open("/dev/console", O_NOCTTY)) == -1)
-	{
-		perror("open");
-		E_FATAL("Could not open console device.");
-	}
 
 	if ((ad = ad_open_dev(cmd_ln_str_r(config, "-adcdev"),
 			(int) cmd_ln_float32_r(config, "-samprate"))) == NULL)
@@ -196,7 +205,6 @@ static void recognize_from_microphone()
 		{
 			utt_started = TRUE;
 			printf("Listening...\n");
-			led_on(fd);
 		}
 		if (!in_speech && utt_started)
 		{
@@ -216,12 +224,10 @@ static void recognize_from_microphone()
 			}
 			utt_started = FALSE;
 			printf("READY....\n");
-			led_off(fd);
 		}
 		sleep_msec(100);
 	}
 	ad_close(ad);
-    close(fd);
 }
 
 int main(int argc, char *argv[])
